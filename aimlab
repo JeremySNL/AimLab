@@ -1,0 +1,56 @@
+import pygame
+import random
+pygame.init()
+
+class target(object):
+    def __init__(self, x, y, rad, color):
+        self.x = x
+        self.y = y
+        self.rad = rad
+        self.color = (255, 0, 0)
+        self.respawnTime = 300
+
+    def draw(self, screen):
+        pygame.draw.circle(screen, (255, 0, 0), (self.x, self.y), self.rad)
+
+    def getClicked(self):
+        self.x = random.randint((self.rad), (screenWidth - self.rad))
+        self.y = random.randint((self.rad), (screenHeight - self.rad))
+        self.respawnTime = 0
+
+#Funcion para que se dibuje todos los eventos
+def redraw(screen):
+    screen.fill((0, 0, 0))
+    target_1.draw(screen)
+    pygame.display.update()
+
+#Variables
+screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+screenWidth, screenHeight = pygame.display.get_window_size()
+target_1 = target(0, 0, 30, (255, 0, 0))
+
+run = True
+while run:
+    mouse_x, mouse_y = pygame.mouse.get_pos()
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            run = False
+    keys = pygame.key.get_pressed()
+    
+    #Si presiona ESC se cerrará el juego 
+    if keys[pygame.K_ESCAPE]:
+        run = False
+
+    distance = int((((mouse_x - target_1.x)**2) + ((mouse_y - target_1.y)**2))**(0.5))
+    if distance <= target_1.rad and pygame.mouse.get_pressed()[0]:
+        target_1.getClicked()
+
+    if target_1.respawnTime >= 300:
+        target_1.x = random.randint((target_1.rad),(screenWidth - target_1.rad))
+        target_1.y = random.randint((target_1.rad), (screenHeight - target_1.rad))
+        target_1.respawnTime = 0
+    
+    target_1.respawnTime += 1
+    redraw(screen)
+pygame.QUIT
