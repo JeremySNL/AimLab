@@ -21,15 +21,22 @@ class target(object):
 #Funcion para que se dibuje todos los eventos
 def redraw(screen):
     screen.fill((0, 0, 0))
-    if not(pause):
+    if not(pause) and not(win):
         target_1.draw(screen)
         scoreText = scoreFont.render("Score: " + str(score), 1, (0, 0, 255))
         screen.blit(scoreText, ((screenWidth * 0.90), 20))
-    else:
+    elif pause and not(win):
         scoreText = scoreFont.render("Press space bar to continue", 1, (255, 255, 255))
         text_x, text_y = scoreText.get_size()
         screen.blit(scoreText, ((screenWidth/2 - text_x/2), screenHeight/2 - text_y/2))
         pygame.draw.rect(screen, (255, 255, 255), ((screenWidth/2 - text_x/2 - 10), (screenHeight/2 - text_y/2), (text_x + 20), (text_y+5)), 1)
+    else:
+        winText = scoreFont.render("You win!", 1, (255, 255, 255))
+        exitText = scoreFont.render("Press ESC to exit", 1, (255, 255, 255))
+        winText_x, winText_y = winText.get_size()
+        exitText_x, exitText_y = exitText.get_size()
+        screen.blit(winText, (screenWidth/2 - winText_x/2, screenHeight/2 - winText_y/2))
+        screen.blit(exitText, (screenWidth/2 - exitText_x/2, screenHeight/2 - exitText_y/2 + 100))
     pygame.display.update()
 
 #Variables
@@ -40,6 +47,7 @@ screenWidth, screenHeight = pygame.display.get_window_size()
 target_1 = target(screenWidth/2, screenHeight/2, 30, (255, 0, 0))
 scoreFont = pygame.font.SysFont("comicsans", 25, True, False)
 score = 1
+win = False
 pause = True
 spaceCD = -1000
 spawnCD = 0
@@ -82,6 +90,9 @@ while run:
         target_1.y = random.randint((target_1.rad), (screenHeight - target_1.rad))
         print(str(current_time), str(spawnCD))
         spawnCD = pygame.time.get_ticks()
+
+    if score >= 35:
+        win = True
 
     redraw(screen)
 pygame.QUIT
