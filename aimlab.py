@@ -55,6 +55,13 @@ while run:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
+        
+        distance = int((((mouse_x - target_1.x)**2) + ((mouse_y - target_1.y)**2))**(0.5))
+        if distance <= target_1.rad and event.type == pygame.MOUSEBUTTONDOWN and not(pause):
+            target_1.getClicked()
+            spawnCD = pygame.time.get_ticks()
+            score += 1
+            vel -= vel_resta
     
     keys = pygame.key.get_pressed()
     #Si presiona ESC se cerrará el juego 
@@ -69,13 +76,6 @@ while run:
     elif keys[pygame.K_SPACE] and not(pause) and (current_time - spaceCD) >= 1000:
         pause = True
         spaceCD = pygame.time.get_ticks()
-
-    distance = int((((mouse_x - target_1.x)**2) + ((mouse_y - target_1.y)**2))**(0.5))
-    if distance <= target_1.rad and pygame.mouse.get_pressed()[0] and not(pause):
-        target_1.getClicked()
-        spawnCD = pygame.time.get_ticks()
-        score += 1
-        vel -= vel_resta
 
     if (current_time - spawnCD) >= vel and not(pause):
         target_1.x = random.randint((target_1.rad),(screenWidth - target_1.rad))
