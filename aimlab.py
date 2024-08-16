@@ -23,15 +23,17 @@ def redraw(screen):
     screen.fill((0, 0, 0))
     if not(pause) and not(win):
         target_1.draw(screen)
-        scoreText = scoreFont.render("Score: " + str(score), 1, (0, 0, 255))
-        screen.blit(scoreText, ((screenWidth * 0.90), 20))
+        scoreText = scoreFont.render("Acertados: " + str(score), 1, (0, 0, 255))
+        missText = scoreFont.render("Errados: " + str(miss), 1, (255, 0, 0))
+        screen.blit(scoreText, ((screenWidth/2 - scoreText.get_size()[0] - 20), 20))
+        screen.blit(missText, ((screenWidth/2 + 20), 20))
     elif pause and not(win):
         scoreText = scoreFont.render("Press space bar to continue", 1, (255, 255, 255))
         text_x, text_y = scoreText.get_size()
         screen.blit(scoreText, ((screenWidth/2 - text_x/2), screenHeight/2 - text_y/2))
         pygame.draw.rect(screen, (255, 255, 255), ((screenWidth/2 - text_x/2 - 10), (screenHeight/2 - text_y/2), (text_x + 20), (text_y+5)), 1)
     else:
-        winText = scoreFont.render("You win!", 1, (255, 255, 255))
+        winText = scoreFont.render("You Win!", 1, (255, 255, 255))
         exitText = scoreFont.render("Press ESC to exit", 1, (255, 255, 255))
         winText_x, winText_y = winText.get_size()
         exitText_x, exitText_y = exitText.get_size()
@@ -46,7 +48,8 @@ screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 screenWidth, screenHeight = pygame.display.get_window_size()
 target_1 = target(screenWidth/2, screenHeight/2, 30, (255, 0, 0))
 scoreFont = pygame.font.SysFont("comicsans", 25, True, False)
-score = 1
+score = 0
+miss = 0
 win = False
 pause = True
 spaceCD = -1000
@@ -70,6 +73,8 @@ while run:
             spawnCD = pygame.time.get_ticks()
             score += 1
             vel -= vel_resta
+        elif event.type == pygame.MOUSEBUTTONDOWN and not(pause):
+            miss += 1
     
     keys = pygame.key.get_pressed()
     #Si presiona ESC se cerrará el juego 
@@ -88,7 +93,6 @@ while run:
     if (current_time - spawnCD) >= vel and not(pause):
         target_1.x = random.randint((target_1.rad),(screenWidth - target_1.rad))
         target_1.y = random.randint((target_1.rad), (screenHeight - target_1.rad))
-        print(str(current_time), str(spawnCD))
         spawnCD = pygame.time.get_ticks()
 
     if score >= 35:
