@@ -5,11 +5,13 @@ pygame.init()
 pygame.display.set_caption("AimLab")
 
 class target(object):
-    def __init__(self, x, y, rad, color):
+    def __init__(self, x, y, rad, color, start_vel, minus_vel):
         self.x = x
         self.y = y
         self.rad = rad
-        self.color = (255, 0, 0)
+        self.color = color
+        self.start_vel = start_vel
+        self.minus_vel = minus_vel
 
     def draw(self, screen):
         pygame.draw.circle(screen, (255, 0, 0), (self.x, self.y), self.rad)
@@ -42,11 +44,9 @@ def redraw(screen):
     pygame.display.update()
 
 #Variables
-vel_resta = 50
-vel = 2000
 screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 screenWidth, screenHeight = pygame.display.get_window_size()
-target_1 = target(screenWidth/2, screenHeight/2, 30, (255, 0, 0))
+target_1 = target(screenWidth/2, screenHeight/2, 30, (255, 0, 0), 2000, 50)
 scoreFont = pygame.font.SysFont("comicsans", 25, True, False)
 score = 0
 miss = 0
@@ -72,7 +72,7 @@ while run:
             target_1.getClicked()
             spawnCD = pygame.time.get_ticks()
             score += 1
-            vel -= vel_resta
+            target_1.start_vel -= target_1.minus_vel
         elif event.type == pygame.MOUSEBUTTONDOWN and not(pause):
             miss += 1
     
@@ -90,7 +90,7 @@ while run:
         pause = True
         spaceCD = pygame.time.get_ticks()
 
-    if (current_time - spawnCD) >= vel and not(pause):
+    if (current_time - spawnCD) >= target_1.start_vel and not(pause):
         target_1.x = random.randint((target_1.rad),(screenWidth - target_1.rad))
         target_1.y = random.randint((target_1.rad), (screenHeight - target_1.rad))
         spawnCD = pygame.time.get_ticks()
