@@ -23,33 +23,41 @@ class target(object):
 #Funcion para que se dibuje todos los eventos
 def redraw(screen):
     screen.fill((0, 0, 0))
-    if not(pause) and not(win):
+    if not(pause) and not(win) and not(loss):
         target_1.draw(screen)
         scoreText = scoreFont.render("Acertados: " + str(score), 1, (0, 0, 255))
         missText = scoreFont.render("Errados: " + str(miss), 1, (255, 0, 0))
         screen.blit(scoreText, ((screenWidth/2 - scoreText.get_size()[0] - 20), 20))
         screen.blit(missText, ((screenWidth/2 + 20), 20))
-    elif pause and not(win):
+    elif pause and not(win) and not(loss):
         scoreText = scoreFont.render("Press space bar to continue", 1, (255, 255, 255))
         text_x, text_y = scoreText.get_size()
         screen.blit(scoreText, ((screenWidth/2 - text_x/2), screenHeight/2 - text_y/2))
         pygame.draw.rect(screen, (255, 255, 255), ((screenWidth/2 - text_x/2 - 10), (screenHeight/2 - text_y/2), (text_x + 20), (text_y+5)), 1)
-    else:
+    elif win and not(loss):
         winText = scoreFont.render("You Win!", 1, (255, 255, 255))
         exitText = scoreFont.render("Press ESC to exit", 1, (255, 255, 255))
         winText_x, winText_y = winText.get_size()
         exitText_x, exitText_y = exitText.get_size()
         screen.blit(winText, (screenWidth/2 - winText_x/2, screenHeight/2 - winText_y/2))
         screen.blit(exitText, (screenWidth/2 - exitText_x/2, screenHeight/2 - exitText_y/2 + 100))
+    elif loss:
+        lossText = scoreFont.render("You loss XDDDD", 1, (255, 255, 255))
+        exitText = scoreFont.render("Press ESC to exit", 1, (255, 255, 255))
+        lossText_x, lossText_y = lossText.get_size()
+        exitText_x, exitText_y = exitText.get_size()
+        screen.blit(lossText, (screenWidth/2 - lossText_x/2, screenHeight/2 - lossText_y/2))
+        screen.blit(exitText, (screenWidth/2 - exitText_x/2, screenHeight/2 - exitText_y/2 + 100))
     pygame.display.update()
 
 #Variables
 screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 screenWidth, screenHeight = pygame.display.get_window_size()
-target_1 = target(screenWidth/2, screenHeight/2, 30, (255, 0, 0), 2000, 50)
+target_1 = target(screenWidth/2, screenHeight/2, 50, (255, 0, 0), 2000, 50)
 scoreFont = pygame.font.SysFont("comicsans", 25, True, False)
 score = 0
 miss = 0
+loss = False
 win = False
 pause = True
 spaceCD = -1000
@@ -95,8 +103,10 @@ while run:
         target_1.y = random.randint((target_1.rad), (screenHeight - target_1.rad))
         spawnCD = pygame.time.get_ticks()
 
-    if score >= 35:
+    if score >= 35 and miss < 150:
         win = True
+    elif score < 35 and miss >= 150:
+        loss = True
 
     redraw(screen)
 pygame.QUIT
